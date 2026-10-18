@@ -5,7 +5,9 @@ public enum RepairStatus {
 
     private final String label;
 
-    RepairStatus(String label) { this.label = label; }
+    RepairStatus(String label) {
+        this.label = label;
+    }
 
     public boolean canMoveTo(RepairStatus next) {
         return switch (this) {
@@ -15,8 +17,12 @@ public enum RepairStatus {
         };
     }
 
-    public String getLabel() { return label; }
+    public String getLabel() {
+        return label;
+    }
 
     @Override
-    public String toString() { return label; }
+    public String toString() {
+        return label;
+    }
 }

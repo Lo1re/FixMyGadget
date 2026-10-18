@@ -25,8 +25,7 @@ public class Gadget {
     }
 
     //full constructor
-    public Gadget(String name, String manufacturer, BigDecimal price,
-                  GadgetType type, int screenWidth, int screenHeight) {
+    public Gadget(String name, String manufacturer, BigDecimal price, GadgetType type, int screenWidth, int screenHeight) {
         this.name = name;
         this.manufacturer = manufacturer;
         this.price = price;
@@ -69,8 +68,7 @@ public class Gadget {
             }
             featuresText += f.name();
         }
-        writer.write(name + ";" + manufacturer + ";" + price + ";" + type.name() + ";"
-                + screenWidth + ";" + screenHeight + ";" + featuresText + "\n");
+        writer.write(name + ";" + manufacturer + ";" + price + ";" + type.name() + ";" + screenWidth + ";" + screenHeight + ";" + featuresText + "\n");
         writer.flush();
     }
 
@@ -111,28 +109,65 @@ public class Gadget {
         return sb.toString();
     }
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public String getManufacturer() { return manufacturer; }
-    public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
+    public String getName() {
+        return name;
+    }
 
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public GadgetType getType() { return type; }
-    public void setType(GadgetType type) { this.type = type; }
+    public String getManufacturer() {
+        return manufacturer;
+    }
 
-    public int getScreenWidth() { return screenWidth; }
-    public void setScreenWidth(int screenWidth) { this.screenWidth = screenWidth; }
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
 
-    public int getScreenHeight() { return screenHeight; }
-    public void setScreenHeight(int screenHeight) { this.screenHeight = screenHeight; }
+    public BigDecimal getPrice() {
+        return price;
+    }
 
-    public Set<Feature> getFeatures() { return features; }
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public GadgetType getType() {
+        return type;
+    }
+
+    public void setType(GadgetType type) {
+        this.type = type;
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public void setScreenWidth(int screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setScreenHeight(int screenHeight) {
+        this.screenHeight = screenHeight;
+    }
+
+    public Set<Feature> getFeatures() {
+        return features;
+    }
 
     @Override
     public String toString() {

@@ -5,10 +5,16 @@ public enum GadgetType {
 
     private final String label;
 
-    GadgetType(String label) { this.label = label; }
+    GadgetType(String label) {
+        this.label = label;
+    }
 
-    public String getLabel() { return label; }
+    public String getLabel() {
+        return label;
+    }
 
     @Override
-    public String toString() { return label; }
+    public String toString() {
+        return label;
+    }
 }
