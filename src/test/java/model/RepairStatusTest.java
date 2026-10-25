@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RepairStatusTest {
 
+
     @Test
     void acceptedCanMoveOnlyToInProgress() {
         assertTrue(ACCEPTED.canMoveTo(IN_PROGRESS));

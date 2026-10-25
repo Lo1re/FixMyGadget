@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GadgetTest {
 
+    //sample obj
     private Gadget sample() {
         Gadget g = new Gadget("Watch 5", "Samsung", new BigDecimal("199.50"), GadgetType.WATCH, 450, 450);
         g.setId(3);
@@ -49,11 +50,13 @@ class GadgetTest {
         Gadget original = sample();
         Gadget copy = new Gadget(original);
 
+        //diff sets with same values
         assertNotSame(original.getFeatures(), copy.getFeatures());
 
         copy.addFeature(Feature.CAMERA);
         copy.removeFeature(Feature.GPS);
 
+        //not affect each other
         assertTrue(original.hasFeature(Feature.GPS));
         assertFalse(original.hasFeature(Feature.CAMERA));
         assertEquals(2, original.getFeatures().size());

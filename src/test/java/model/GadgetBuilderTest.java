@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GadgetBuilderTest {
 
+    //sample obj
     private GadgetBuilder valid() {
         return new GadgetBuilder()
                 .name("Pixel 8")
@@ -43,6 +44,7 @@ class GadgetBuilderTest {
         assertNull(valid().build().getId());
     }
 
+    //assert no duplicates
     @Test
     void duplicateFeaturesAreStoredOnce() {
         Gadget g = valid().feature(Feature.GPS).feature(Feature.GPS).build();
@@ -86,6 +88,7 @@ class GadgetBuilderTest {
         assertThrows(IllegalStateException.class, () -> new GadgetBuilder().build());
     }
 
+    //just polymoprphyic test
     @Test
     void builderCanBeUsedViaBuilderInterface() {
         Builder<Gadget> b = valid();
