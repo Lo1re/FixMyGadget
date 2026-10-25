@@ -7,8 +7,10 @@ import com.fixmygadget.db.DatabaseInitializer;
 import com.fixmygadget.facade.FixMyGadgetFacade;
 import com.fixmygadget.service.CustomerService;
 import com.fixmygadget.service.GadgetService;
-import com.fixmygadget.service.ReportService;
 import com.fixmygadget.service.RepairService;
+import com.fixmygadget.service.ReportService;
+import com.fixmygadget.ui.MainApp;
+import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,11 +18,13 @@ public class App {
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
-
-        ConnectionProvider.getInstance();
-
-
-        new DatabaseInitializer().init();
+        try {
+            ConnectionProvider.getInstance();
+            new DatabaseInitializer().init();
+        } catch (RuntimeException e) {
+            log.error("Cannot start application", e);
+            return;
+        }
 
         DaoFactory daoFactory = new JdbcDaoFactory();
 
@@ -36,7 +40,7 @@ public class App {
                 gadgetService, customerService, repairService, reportService);
 
         log.info("FixMyGadget started");
-
-
+        MainApp.setFacade(facade);
+        Application.launch(MainApp.class, args);
     }
 }

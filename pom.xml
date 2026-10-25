@@ -17,6 +17,7 @@
         <mockito.version>5.14.2</mockito.version>
         <log4j.version>2.24.1</log4j.version>
         <slf4j.version>2.0.16</slf4j.version>
+
     </properties>
 
     <dependencies>
