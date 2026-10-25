@@ -2,25 +2,41 @@ package com.fixmygadget.ui;
 
 import com.fixmygadget.facade.FixMyGadgetFacade;
 import com.fixmygadget.model.Technician;
+import com.fixmygadget.sort.TechnicianSortField;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class TechniciansPage extends Page {
     private final TableView<Technician> table = new TableView<>();
+    private final Map<TechnicianSortField, Label> headers = new HashMap<>();
     private final Label countLabel = new Label();
+
+    private List<Technician> current = List.of();
+    private TechnicianSortField sortField = null;
+    private boolean ascending = true;
 
     public TechniciansPage(FixMyGadgetFacade facade) {
         super(facade, "Technicians", "Masters who repair the gadgets");
 
+        buildTable();
+        countLabel.getStyleClass().add("count-label");
+        getChildren().addAll(buildActions(), table, countLabel);
+    }
+
+    private HBox buildActions() {
         Button addButton = Ui.button("+ Add technician", "primary-button");
         addButton.setOnAction(e -> Ui.run(this::addTechnician));
         Button editButton = Ui.button("Edit", "secondary-button");
@@ -30,26 +46,68 @@ public class TechniciansPage extends Page {
         Button ordersButton = Ui.button("Assigned orders", "secondary-button");
         ordersButton.setOnAction(e -> Ui.run(this::showOrders));
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox actions = new HBox(10, addButton, editButton, deleteButton, spacer, ordersButton);
+        HBox actions = new HBox(12,
+                Ui.buttonGroup(addButton, editButton, deleteButton),
+                Ui.spacer(),
+                Ui.buttonGroup(ordersButton));
+        actions.setAlignment(Pos.CENTER_LEFT);
+        return actions;
+    }
 
-        table.getColumns().add(Ui.textColumn("#", 70, t -> String.valueOf(t.getId())));
-        table.getColumns().add(Ui.textColumn("Last name", 260, t -> t.getLastName()));
-        table.getColumns().add(Ui.textColumn("First name", 260, t -> t.getFirstName()));
+    private void buildTable() {
+        TableColumn<Technician, String> idColumn = Ui.textColumn("#", 70, t -> String.valueOf(t.getId()));
+        TableColumn<Technician, String> lastNameColumn =
+                sortable(TechnicianSortField.LAST_NAME, 260, t -> t.getLastName());
+        TableColumn<Technician, String> firstNameColumn =
+                sortable(TechnicianSortField.FIRST_NAME, 260, t -> t.getFirstName());
+
+        table.getColumns().addAll(idColumn, lastNameColumn, firstNameColumn);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPlaceholder(new Label("No technicians yet"));
         VBox.setVgrow(table, Priority.ALWAYS);
+    }
 
-        countLabel.getStyleClass().add("count-label");
-        getChildren().addAll(actions, table, countLabel);
+    private TableColumn<Technician, String> sortable(TechnicianSortField field, double width,
+                                                     Function<Technician, String> getter) {
+        TableColumn<Technician, String> column = Ui.textColumn(null, width, getter);
+        Label header = new Label(field.getLabel());
+        header.getStyleClass().add("sort-header");
+        header.setOnMouseClicked(e -> Ui.run(() -> sortBy(field)));
+        column.setGraphic(header);
+        headers.put(field, header);
+        return column;
+    }
+
+    private void sortBy(TechnicianSortField field) {
+        if (sortField == field) {
+            ascending = !ascending;
+        } else {
+            sortField = field;
+            ascending = true;
+        }
+        for (TechnicianSortField f : TechnicianSortField.values()) {
+            Label header = headers.get(f);
+            String arrow = "";
+            if (f == sortField) {
+                arrow = ascending ? "  ▲" : "  ▼";
+            }
+            header.setText(f.getLabel() + arrow);
+        }
+        showCurrent();
+    }
+
+    private void showCurrent() {
+        if (sortField != null) {
+            facade.sortTechnicians(current, sortField, ascending);   // Quick sort в Java
+        }
+        table.getItems().setAll(current);
+        countLabel.setText(current.size() + " technicians");
     }
 
     @Override
     public void refresh() {
-        List<Technician> technicians = facade.getAllTechnicians();
-        table.getItems().setAll(technicians);
-        countLabel.setText(technicians.size() + " technicians");
+        current = facade.getAllTechnicians();
+        showCurrent();
     }
 
     private Technician selected() {
@@ -92,7 +150,7 @@ public class TechniciansPage extends Page {
 
     private void showOrders() {
         Technician technician = selected();
-        new HistoryDialog(Ui.technicianName(technician),
+        new HistoryDialog(facade, Ui.technicianName(technician),
                 facade.findOrdersByTechnician(technician.getId())).showAndWait();
     }
 }

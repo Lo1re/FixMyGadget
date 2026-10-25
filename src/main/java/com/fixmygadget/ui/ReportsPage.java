@@ -22,41 +22,53 @@ public class ReportsPage extends Page {
 
     private final ComboBox<Technician> technicianBox = Ui.combo("Select technician");
     private final Label countLabel = new Label("—");
-    private final OrdersTable ordersTable = new OrdersTable();
+    private final OrdersTable ordersTable = new OrdersTable(facade);
 
     public ReportsPage(FixMyGadgetFacade facade) {
         super(facade, "Reports", "Revenue and workload of technicians");
+        getChildren().addAll(buildRevenueCard(), buildTechnicianCard());
+    }
 
-        Label revenueTitle = new Label("Revenue for a period");
-        revenueTitle.getStyleClass().add("section-title");
-        Label revenueHint = new Label("Sum of the cost of finished orders");
-        revenueHint.getStyleClass().add("count-label");
+    private VBox buildRevenueCard() {
+        Label title = new Label("Revenue for a period");
+        title.getStyleClass().add("section-title");
+        Label hint = new Label("Sum of the cost of finished orders");
+        hint.getStyleClass().add("count-label");
 
-        Button revenueButton = Ui.button("Calculate", "primary-button");
-        revenueButton.setOnAction(e -> Ui.run(this::calculateRevenue));
+        fromPicker.setPrefWidth(150);
+        toPicker.setPrefWidth(150);
+        HBox period = new HBox(8, fromPicker, new Label("—"), toPicker);
+        period.setAlignment(Pos.CENTER_LEFT);
+
+        Button calculateButton = Ui.button("Calculate", "primary-button");
+        calculateButton.setOnAction(e -> Ui.run(this::calculateRevenue));
         revenueLabel.getStyleClass().add("big-value");
 
-        HBox revenueRow = new HBox(12, fromPicker, toPicker, revenueButton);
-        revenueRow.setAlignment(Pos.CENTER_LEFT);
-        VBox revenueCard = new VBox(10, revenueTitle, revenueHint, revenueRow, revenueLabel);
-        revenueCard.getStyleClass().add("card");
+        HBox row = new HBox(14, Ui.labeled("From — to", period), calculateButton);
+        row.setAlignment(Pos.BOTTOM_LEFT);
 
-        Label technicianTitle = new Label("Orders of a technician");
-        technicianTitle.getStyleClass().add("section-title");
+        VBox card = new VBox(10, title, hint, row, revenueLabel);
+        card.getStyleClass().add("card");
+        return card;
+    }
 
+    private VBox buildTechnicianCard() {
+        Label title = new Label("Orders of a technician");
+        title.getStyleClass().add("section-title");
+
+        technicianBox.setPrefWidth(260);
         Button showButton = Ui.button("Show orders", "primary-button");
         showButton.setOnAction(e -> Ui.run(this::showTechnicianOrders));
         countLabel.getStyleClass().add("big-value");
-        technicianBox.setPrefWidth(260);
 
-        HBox technicianRow = new HBox(12, technicianBox, showButton, countLabel);
-        technicianRow.setAlignment(Pos.CENTER_LEFT);
-        VBox technicianCard = new VBox(10, technicianTitle, technicianRow, ordersTable);
-        technicianCard.getStyleClass().add("card");
+        HBox row = new HBox(14, Ui.labeled("Technician", technicianBox), showButton, countLabel);
+        row.setAlignment(Pos.BOTTOM_LEFT);
+
         VBox.setVgrow(ordersTable, Priority.ALWAYS);
-        VBox.setVgrow(technicianCard, Priority.ALWAYS);
-
-        getChildren().addAll(revenueCard, technicianCard);
+        VBox card = new VBox(10, title, row, ordersTable);
+        card.getStyleClass().add("card");
+        VBox.setVgrow(card, Priority.ALWAYS);
+        return card;
     }
 
     @Override
@@ -69,7 +81,7 @@ public class ReportsPage extends Page {
         technicianBox.getItems().setAll(facade.getAllTechnicians());
         technicianBox.setValue(null);
         countLabel.setText("—");
-        ordersTable.getItems().clear();
+        ordersTable.setOrders(List.of());
     }
 
     private void calculateRevenue() {

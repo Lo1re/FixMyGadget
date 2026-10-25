@@ -5,6 +5,7 @@ import com.fixmygadget.model.Feature;
 import com.fixmygadget.model.Gadget;
 import com.fixmygadget.model.GadgetType;
 import com.fixmygadget.sort.GadgetSortField;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
@@ -12,10 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
@@ -46,7 +45,7 @@ public class GadgetsPage extends Page {
 
     private final TextField nameField = new TextField();
     private final ComboBox<GadgetType> typeBox = Ui.combo("Any type");
-    private final ComboBox<String> manufacturerBox = Ui.combo("Manufacturer");
+    private final ComboBox<String> manufacturerBox = Ui.combo("Any manufacturer");
     private final TextField x1Field = new TextField();
     private final TextField y1Field = new TextField();
     private final TextField x2Field = new TextField();
@@ -60,9 +59,11 @@ public class GadgetsPage extends Page {
         super(facade, "Gadgets", "Catalog of smartphones, tablets and watches");
 
         nameField.setPromptText("Name contains...");
+        nameField.setMaxWidth(Double.MAX_VALUE);
         typeBox.getItems().setAll(GadgetType.values());
         for (TextField field : new TextField[]{x1Field, y1Field, x2Field, y2Field}) {
             field.setPrefWidth(75);
+            InputFilters.digitsOnly(field);
         }
         x1Field.setPromptText("W");
         y1Field.setPromptText("H");
@@ -70,73 +71,78 @@ public class GadgetsPage extends Page {
         y2Field.setPromptText("H");
 
         buildTable();
-        getChildren().addAll(buildFilters(), buildActions(), table, countLabel);
         countLabel.getStyleClass().add("count-label");
+        getChildren().addAll(buildSearchCard(), buildActions(), table, buildBottomBar());
     }
 
-    private VBox buildFilters() {
+
+    private VBox buildSearchCard() {
+        Label title = new Label("Search");
+        title.getStyleClass().add("section-title");
+
+        // row 1: name, type, manufacturer
+        VBox nameBox = Ui.labeled("Name", nameField);
+        HBox.setHgrow(nameBox, Priority.ALWAYS);
+        HBox row1 = new HBox(14, nameBox, Ui.labeled("Type", typeBox), Ui.labeled("Manufacturer", manufacturerBox));
+
+        // row 2: screen size and the buttons
         Button searchButton = Ui.button("Search", "primary-button");
         searchButton.setOnAction(e -> Ui.run(this::search));
-
-        Button manufacturerButton = Ui.button("Filter", "secondary-button");
-        manufacturerButton.setOnAction(e -> Ui.run(this::filterByManufacturer));
-
-        Button screenButton = Ui.button("Find", "secondary-button");
-        screenButton.setOnAction(e -> Ui.run(this::filterByScreen));
-
-        Button resetButton = Ui.button("Reset all", "secondary-button");
+        Button resetButton = Ui.button("Reset", "secondary-button");
         resetButton.setOnAction(e -> Ui.run(this::refresh));
 
-        FlowPane row1 = new FlowPane(10, 10,
-                nameField, typeBox, searchButton, label("   Manufacturer"), manufacturerBox, manufacturerButton);
-        FlowPane row2 = new FlowPane(10, 10,
-                label("Screen from"), x1Field, label("×"), y1Field,
-                label("to"), x2Field, label("×"), y2Field, screenButton, resetButton);
+        HBox screenFrom = new HBox(6, x1Field, new Label("×"), y1Field);
+        screenFrom.setAlignment(Pos.CENTER_LEFT);
+        HBox screenTo = new HBox(6, x2Field, new Label("×"), y2Field);
+        screenTo.setAlignment(Pos.CENTER_LEFT);
 
-        Label title = new Label("Search and filters");
-        title.getStyleClass().add("section-title");
+        HBox row2 = new HBox(14,
+                Ui.labeled("Screen from (W × H)", screenFrom),
+                Ui.labeled("Screen to (W × H)", screenTo),
+                Ui.spacer(), resetButton, searchButton);
+        row2.setAlignment(Pos.BOTTOM_LEFT);
 
         VBox card = new VBox(12, title, row1, row2);
         card.getStyleClass().add("card");
         return card;
     }
 
+
     private HBox buildActions() {
         Button addButton = Ui.button("+ Add gadget", "primary-button");
         addButton.setOnAction(e -> Ui.run(this::addGadget));
-
         Button editButton = Ui.button("Edit", "secondary-button");
         editButton.setOnAction(e -> Ui.run(this::editGadget));
-
         Button deleteButton = Ui.button("Delete", "danger-button");
         deleteButton.setOnAction(e -> Ui.run(this::deleteGadget));
 
         Button addFeatureButton = Ui.button("+ Feature", "secondary-button");
         addFeatureButton.setOnAction(e -> Ui.run(() -> changeFeature(true)));
-
         Button removeFeatureButton = Ui.button("− Feature", "secondary-button");
         removeFeatureButton.setOnAction(e -> Ui.run(() -> changeFeature(false)));
 
         Button historyButton = Ui.button("Repair history", "secondary-button");
         historyButton.setOnAction(e -> Ui.run(this::showHistory));
 
+        HBox actions = new HBox(12,
+                Ui.buttonGroup(addButton, editButton, deleteButton),
+                Ui.buttonGroup(addFeatureButton, removeFeatureButton),
+                Ui.buttonGroup(historyButton));
+        actions.setAlignment(Pos.CENTER_LEFT);
+        return actions;
+    }
+
+
+
+    private HBox buildBottomBar() {
         Button importButton = Ui.button("Import", "secondary-button");
         importButton.setOnAction(e -> Ui.run(this::importCatalog));
-
         Button exportButton = Ui.button("Export", "secondary-button");
         exportButton.setOnAction(e -> Ui.run(this::exportCatalog));
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        return new HBox(10, addButton, editButton, deleteButton, addFeatureButton,
-                removeFeatureButton, historyButton, spacer, importButton, exportButton);
-    }
-
-    private Label label(String text) {
-        Label label = new Label(text);
-        label.getStyleClass().add("field-label");
-        return label;
+        HBox bar = new HBox(12, countLabel, Ui.spacer(), Ui.buttonGroup(importButton, exportButton));
+        bar.setAlignment(Pos.CENTER_LEFT);
+        return bar;
     }
 
     private void buildTable() {
@@ -237,38 +243,40 @@ public class GadgetsPage extends Page {
         current = all;
         showCurrent();
     }
-
     private void search() {
-        String name = nameField.getText().trim();
-        GadgetType type = typeBox.getValue();
+        List<Gadget> result = facade.getAllGadgets();
 
-        if (name.isEmpty() && type == null) {
-            current = facade.getAllGadgets();
-        } else if (name.isEmpty()) {
-            current = facade.findGadgetsByType(type);
-        } else if (type != null) {
-            current = facade.findGadgets(name, type);
-        } else {
-            current = new ArrayList<>();
-            for (Gadget gadget : facade.getAllGadgets()) {
-                if (gadget.getName().toLowerCase().contains(name.toLowerCase())) {
-                    current.add(gadget);
+        String name = nameField.getText().trim().toLowerCase();
+        if (!name.isEmpty()) {
+            List<Gadget> byName = new ArrayList<>();
+            for (Gadget gadget : result) {
+                if (gadget.getName().toLowerCase().contains(name)) {
+                    byName.add(gadget);
                 }
             }
+            result = byName;
         }
+        if (typeBox.getValue() != null) {
+            result = Ui.intersect(result, facade.findGadgetsByType(typeBox.getValue()), Gadget::getId);
+        }
+        if (manufacturerBox.getValue() != null) {
+            result = Ui.intersect(result,
+                    facade.findGadgetsByManufacturer(manufacturerBox.getValue()), Gadget::getId);
+        }
+        if (isScreenFilled()) {
+            result = Ui.intersect(result, findByScreen(), Gadget::getId);
+        }
+
+        current = result;
         showCurrent();
     }
 
-    private void filterByManufacturer() {
-        String manufacturer = manufacturerBox.getValue();
-        if (manufacturer == null) {
-            throw new IllegalArgumentException("Choose a manufacturer first");
-        }
-        current = facade.findGadgetsByManufacturer(manufacturer);
-        showCurrent();
+    private boolean isScreenFilled() {
+        return !x1Field.getText().isBlank() || !y1Field.getText().isBlank()
+                || !x2Field.getText().isBlank() || !y2Field.getText().isBlank();
     }
 
-    private void filterByScreen() {
+    private List<Gadget> findByScreen() {
         int x1 = Ui.parseInt(x1Field.getText(), "Screen width (from)");
         int y1 = Ui.parseInt(y1Field.getText(), "Screen height (from)");
         int x2 = Ui.parseInt(x2Field.getText(), "Screen width (to)");
@@ -276,11 +284,8 @@ public class GadgetsPage extends Page {
         if (x1 > x2 || y1 > y2) {
             throw new IllegalArgumentException("'From' size must not be bigger than 'to' size");
         }
-        current = facade.findGadgetsByScreenSize(x1, y1, x2, y2);
-        showCurrent();
+        return facade.findGadgetsByScreenSize(x1, y1, x2, y2);
     }
-
-
 
     private Gadget selected() {
         Gadget gadget = table.getSelectionModel().getSelectedItem();
@@ -336,7 +341,7 @@ public class GadgetsPage extends Page {
 
     private void showHistory() {
         Gadget gadget = selected();
-        new HistoryDialog(gadget.getName(), facade.getGadgetHistory(gadget.getId())).showAndWait();
+        new HistoryDialog(facade, gadget.getName(), facade.getGadgetHistory(gadget.getId())).showAndWait();
     }
 
 

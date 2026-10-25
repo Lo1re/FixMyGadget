@@ -10,6 +10,7 @@ import com.fixmygadget.model.Technician;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -21,6 +22,10 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +33,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 public final class Ui {
@@ -159,6 +168,39 @@ public final class Ui {
             }
         });
         return box;
+    }
+
+    public static HBox buttonGroup(Node... buttons) {
+        HBox group = new HBox(8, buttons);
+        group.getStyleClass().add("button-group");
+        group.setAlignment(Pos.CENTER_LEFT);
+        return group;
+    }
+
+    public static Region spacer() {
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        return spacer;
+    }
+
+    public static VBox labeled(String text, Node field) {
+        Label label = new Label(text);
+        label.getStyleClass().add("field-label");
+        return new VBox(5, label, field);
+    }
+
+    public static <T> List<T> intersect(List<T> first, List<T> second, Function<T, Integer> idOf) {
+        Set<Integer> ids = new HashSet<>();
+        for (T item : second) {
+            ids.add(idOf.apply(item));
+        }
+        List<T> result = new ArrayList<>();
+        for (T item : first) {
+            if (ids.contains(idOf.apply(item))) {
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     public static GridPane form() {

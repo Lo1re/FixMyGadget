@@ -83,11 +83,37 @@ public class RepairService {
         log.info("Cost {} set for order id={}", cost, orderId);
     }
 
+    public void assignAndPrice(int orderId, Integer technicianId, BigDecimal cost) {
+        if (technicianId == null && cost == null) {
+            throw new IllegalArgumentException("Choose a technician or enter a cost");
+        }
+        if (cost != null && cost.signum() < 0) {
+            throw new IllegalArgumentException("Cost must be 0 or more");
+        }
+
+        RepairOrder order = getById(orderId);
+        if (technicianId != null) {
+            Technician technician = technicianDao.findById(technicianId);
+            if (technician == null) {
+                throw new NotFoundException("Technician not found: id=" + technicianId);
+            }
+            order.setTechnician(technician);
+        }
+        if (cost != null) {
+            order.setCost(cost);
+        }
+        orderDao.update(order);
+        log.info("Order id={}: technician={}, cost={}", orderId, order.getTechnician(), order.getCost());
+    }
+
     public void changeStatus(int orderId, RepairStatus newStatus) {
         RepairOrder order = getById(orderId);
 
         if (!order.getStatus().canMoveTo(newStatus)) {
             throw new InvalidStatusTransitionException(order.getStatus(), newStatus);
+        }
+        if (newStatus == RepairStatus.DONE && order.getTechnician() == null) {
+            throw new IllegalArgumentException("Technician is required to finish the order");
         }
         if (newStatus == RepairStatus.DONE && order.getCost() == null) {
             throw new IllegalArgumentException("Cost is required to finish the order");

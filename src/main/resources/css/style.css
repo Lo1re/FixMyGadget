@@ -199,3 +199,11 @@
 .close-button:pressed {
     -fx-background-color: #dc2626;
 }
+.button-group {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12;
+    -fx-padding: 5;
+}
+.error-label { -fx-text-fill: #b91c1c; -fx-font-size: 13px; }

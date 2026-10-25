@@ -205,6 +205,7 @@ class RepairServiceTest {
     @Test
     void changeStatusToDoneSetsFinishedAt() {
         RepairOrder order = order(10, RepairStatus.IN_PROGRESS, new BigDecimal("100"));
+        order.setTechnician(new Technician("Petrenko", "Petro"));
         when(orderDao.findById(10)).thenReturn(order);
         LocalDateTime before = LocalDateTime.now();
 
@@ -217,8 +218,41 @@ class RepairServiceTest {
     }
 
     @Test
+    void changeStatusToDoneRequiresTechnician() {
+        RepairOrder order = order(10, RepairStatus.IN_PROGRESS, new BigDecimal("100"));
+        when(orderDao.findById(10)).thenReturn(order);
+
+        assertThrows(IllegalArgumentException.class, () -> service.changeStatus(10, RepairStatus.DONE));
+
+        assertEquals(RepairStatus.IN_PROGRESS, order.getStatus());
+        assertNull(order.getFinishedAt());
+        verify(orderDao, never()).update(any());
+    }
+
+    @Test
+    void assignAndPriceSetsTechnicianAndCost() {
+        RepairOrder order = order(10, RepairStatus.ACCEPTED, null);
+        Technician tech = new Technician("Petrenko", "Petro");
+        when(orderDao.findById(10)).thenReturn(order);
+        when(technicianDao.findById(5)).thenReturn(tech);
+
+        service.assignAndPrice(10, 5, new BigDecimal("250"));
+
+        assertSame(tech, order.getTechnician());
+        assertEquals(new BigDecimal("250"), order.getCost());
+        verify(orderDao).update(order);
+    }
+
+    @Test
+    void assignAndPriceRequiresTechnicianOrCost() {
+        assertThrows(IllegalArgumentException.class, () -> service.assignAndPrice(10, null, null));
+        verify(orderDao, never()).update(any());
+    }
+
+    @Test
     void changeStatusToDoneRequiresCost() {
         RepairOrder order = order(10, RepairStatus.IN_PROGRESS, null);
+        order.setTechnician(new Technician("Petrenko", "Petro"));
         when(orderDao.findById(10)).thenReturn(order);
 
         assertThrows(IllegalArgumentException.class, () -> service.changeStatus(10, RepairStatus.DONE));

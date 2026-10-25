@@ -20,7 +20,7 @@ public class DashboardPage extends Page {
     private final Label techniciansValue = new Label("0");
     private final Label activeValue = new Label("0");
     private final Label revenueValue = new Label("0");
-    private final OrdersTable recentTable = new OrdersTable();
+    private final OrdersTable recentTable = new OrdersTable(facade);
 
     public DashboardPage(FixMyGadgetFacade facade) {
         super(facade, "Dashboard", "Overview of the service center");

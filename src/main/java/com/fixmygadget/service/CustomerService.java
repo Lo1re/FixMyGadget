@@ -5,6 +5,9 @@ import com.fixmygadget.dao.TechnicianDao;
 import com.fixmygadget.exception.NotFoundException;
 import com.fixmygadget.model.Customer;
 import com.fixmygadget.model.Technician;
+import com.fixmygadget.sort.CustomerSortField;
+import com.fixmygadget.sort.QuickSort;
+import com.fixmygadget.sort.TechnicianSortField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +68,11 @@ public class CustomerService {
         return customerDao.findAll();
     }
 
+    public List<Customer> sortCustomers(List<Customer> customers, CustomerSortField field, boolean ascending) {
+        QuickSort.sort(customers, field.getComparator(ascending));
+        return customers;
+    }
+
 
 
     public void addTechnician(Technician technician) {
@@ -101,21 +109,35 @@ public class CustomerService {
         return technicianDao.findAll();
     }
 
+    public List<Technician> sortTechnicians(List<Technician> technicians, TechnicianSortField field,
+                                            boolean ascending) {
+        QuickSort.sort(technicians, field.getComparator(ascending));
+        return technicians;
+    }
+
 
     private void validateCustomer(Customer customer) {
-        if (customer.getLastName() == null || customer.getLastName().isBlank()
-                || customer.getFirstName() == null || customer.getFirstName().isBlank()) {
-            throw new IllegalArgumentException("Customer last name and first name are required");
-        }
+        validateName(customer.getLastName(), "Customer last name");
+        validateName(customer.getFirstName(), "Customer first name");
         if (customer.getPhone() == null || customer.getPhone().isBlank()) {
             throw new IllegalArgumentException("Customer phone is required");
+        }
+        if (!InputRules.isValidPhone(customer.getPhone())) {
+            throw new IllegalArgumentException("Phone must look like +380XXXXXXXXX (+380 and 9 digits)");
         }
     }
 
     private void validateTechnician(Technician technician) {
-        if (technician.getLastName() == null || technician.getLastName().isBlank()
-                || technician.getFirstName() == null || technician.getFirstName().isBlank()) {
-            throw new IllegalArgumentException("Technician last name and first name are required");
+        validateName(technician.getLastName(), "Technician last name");
+        validateName(technician.getFirstName(), "Technician first name");
+    }
+
+    private void validateName(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(fieldName + " is required");
+        }
+        if (!InputRules.isValidName(value)) {
+            throw new IllegalArgumentException(fieldName + " must contain only letters");
         }
     }
 }

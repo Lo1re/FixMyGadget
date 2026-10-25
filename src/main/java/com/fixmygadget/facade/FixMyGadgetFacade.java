@@ -11,8 +11,10 @@ import com.fixmygadget.service.CustomerService;
 import com.fixmygadget.service.GadgetService;
 import com.fixmygadget.service.ReportService;
 import com.fixmygadget.service.RepairService;
+import com.fixmygadget.sort.CustomerSortField;
 import com.fixmygadget.sort.GadgetSortField;
 import com.fixmygadget.sort.RepairOrderSortField;
+import com.fixmygadget.sort.TechnicianSortField;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -81,6 +83,10 @@ public class FixMyGadgetFacade {
 
     public List<Customer> getAllCustomers() { return customerService.getAllCustomers(); }
 
+    public List<Customer> sortCustomers(List<Customer> customers, CustomerSortField field, boolean ascending) {
+        return customerService.sortCustomers(customers, field, ascending);
+    }
+
 
     public void addTechnician(Technician technician) { customerService.addTechnician(technician); }
 
@@ -90,6 +96,11 @@ public class FixMyGadgetFacade {
 
     public List<Technician> getAllTechnicians() { return customerService.getAllTechnicians(); }
 
+    public List<Technician> sortTechnicians(List<Technician> technicians, TechnicianSortField field,
+                                            boolean ascending) {
+        return customerService.sortTechnicians(technicians, field, ascending);
+    }
+
 
 
     public RepairOrder createOrder(int gadgetId, int customerId, String problem) {
@@ -98,6 +109,10 @@ public class FixMyGadgetFacade {
 
     public void assignTechnician(int orderId, int technicianId) {
         repairService.assignTechnician(orderId, technicianId);
+    }
+
+    public void assignAndPrice(int orderId, Integer technicianId, BigDecimal cost) {
+        repairService.assignAndPrice(orderId, technicianId, cost);
     }
 
     public void setCost(int orderId, BigDecimal cost) { repairService.setCost(orderId, cost); }
