@@ -1,21 +1,20 @@
 package com.fixmygadget.db;
 
 import com.fixmygadget.exception.DaoException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public final class ConnectionProvider {
     private static ConnectionProvider instance;
 
-    private final String url;
-    private final String password;
-    private final String user;
 
+    private final HikariDataSource dataSource;
 
     private ConnectionProvider() {
         try (InputStream in = getClass().getResourceAsStream("/application.properties")) {
@@ -24,25 +23,31 @@ public final class ConnectionProvider {
             }
             Properties props = new Properties();
             props.load(in);
-            this.url = props.getProperty("db.url");
-            this.user = props.getProperty("db.user");
-            this.password = props.getProperty("db.password");
+
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(props.getProperty("db.url"));
+            config.setUsername(props.getProperty("db.user"));
+            config.setPassword(props.getProperty("db.password"));
+            config.setMaximumPoolSize(5);
+            config.setMinimumIdle(2);
+            this.dataSource = new HikariDataSource(config);
         } catch (IOException e) {
             throw new DaoException("Cannot read application.properties", e);
         }
     }
-    public static ConnectionProvider getInstance() {
+
+    public static synchronized ConnectionProvider getInstance() {
         if (instance == null) {
             instance = new ConnectionProvider();
         }
         return instance;
     }
+
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection(url, user, password);
+            return dataSource.getConnection();
         } catch (SQLException e) {
             throw new DaoException("Cannot connect to database", e);
         }
     }
-
 }
