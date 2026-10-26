@@ -26,6 +26,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +52,31 @@ public final class Ui {
     private Ui() {
     }
 
+
+
+    public static void fitFont(Label label, Region container, double reserved,
+                               double maxSize, double minSize, boolean bold) {
+        Runnable fit = () -> {
+            String text = label.getText();
+            double available = container.getWidth() - reserved;
+            if (text == null || available <= 0) {
+                return;
+            }
+            FontWeight weight = bold ? FontWeight.BOLD : FontWeight.NORMAL;
+            double size = maxSize;
+            while (size > minSize) {
+                Text probe = new Text(text);
+                probe.setFont(Font.font(label.getFont().getFamily(), weight, size));
+                if (probe.getLayoutBounds().getWidth() <= available) {
+                    break;
+                }
+                size -= 0.5;
+            }
+            label.setStyle("-fx-font-size: " + size + "px;");
+        };
+        label.textProperty().addListener((o, oldText, newText) -> fit.run());
+        container.widthProperty().addListener((o, oldWidth, newWidth) -> fit.run());
+    }
 
     public static void run(Runnable action) {
         try {

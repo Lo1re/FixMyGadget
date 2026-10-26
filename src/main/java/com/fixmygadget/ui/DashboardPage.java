@@ -39,19 +39,32 @@ public class DashboardPage extends Page {
         getChildren().addAll(cards, recentTitle, recentTable);
     }
 
+    private static final double CARD_PADDING = 14;
+    private static final double ICON_SIZE = 44;
+    private static final double CARD_SPACING = 10;
+
     private HBox statCard(String icon, String iconStyle, String title, Label value) {
         Label iconLabel = new Label(icon);
         iconLabel.getStyleClass().addAll("stat-icon", iconStyle);
+        iconLabel.setStyle("-fx-min-width: " + ICON_SIZE + "; -fx-min-height: " + ICON_SIZE
+                + "; -fx-font-size: 20px;");
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("stat-title");
         value.getStyleClass().add("stat-value");
 
-        HBox card = new HBox(14, iconLabel, new VBox(2, titleLabel, value));
+        HBox card = new HBox(CARD_SPACING, iconLabel, new VBox(2, titleLabel, value));
         card.getStyleClass().add("card");
+        card.setStyle("-fx-padding: " + CARD_PADDING + ";");
         card.setAlignment(Pos.CENTER_LEFT);
+        card.setMinWidth(0);
         card.setPrefWidth(210);
         card.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(card, Priority.ALWAYS);
+
+        // text shrinks to fit the card instead of being cut with "..."
+        double reserved = 2 * CARD_PADDING + ICON_SIZE + CARD_SPACING + 4;
+        Ui.fitFont(titleLabel, card, reserved, 13, 9, false);
+        Ui.fitFont(value, card, reserved, 24, 12, true);
         return card;
     }
 
