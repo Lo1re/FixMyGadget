@@ -1,6 +1,8 @@
 # FixMyGadget
 
 **A lightweight CRM system for gadget repair service centers.**
+<img width="1718" height="1029" alt="image" src="https://github.com/user-attachments/assets/a0313469-f928-4445-994d-7a42cc0afbe5" />
+<img width="1680" height="1023" alt="image" src="https://github.com/user-attachments/assets/5ebc2ebe-d9b2-4d3d-bd82-041348271cd4" />
 
 FixMyGadget is a Java application designed to simplify repair management for service centers working with smartphones, tablets, and smartwatches. It provides a centralized way to manage gadgets, customers, technicians, and repair orders.
 
