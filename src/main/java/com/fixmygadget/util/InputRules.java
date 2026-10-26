@@ -1,4 +1,4 @@
-package com.fixmygadget.service;
+package com.fixmygadget.util;
 
 import java.util.regex.Pattern;
 

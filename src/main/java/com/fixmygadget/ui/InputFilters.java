@@ -1,6 +1,6 @@
 package com.fixmygadget.ui;
 
-import com.fixmygadget.service.InputRules;
+import com.fixmygadget.util.InputRules;
 import javafx.application.Platform;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;

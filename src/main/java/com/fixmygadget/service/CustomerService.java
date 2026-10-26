@@ -8,6 +8,7 @@ import com.fixmygadget.model.Technician;
 import com.fixmygadget.sort.CustomerSortField;
 import com.fixmygadget.sort.QuickSort;
 import com.fixmygadget.sort.TechnicianSortField;
+import com.fixmygadget.util.InputRules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

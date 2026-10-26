@@ -1,6 +1,6 @@
 package com.fixmygadget.ui;
 
-import com.fixmygadget.service.InputRules;
+import com.fixmygadget.util.InputRules;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;

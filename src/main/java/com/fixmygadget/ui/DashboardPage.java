@@ -30,7 +30,7 @@ public class DashboardPage extends Page {
                 statCard("👤", "icon-sky", "Customers", customersValue),
                 statCard("🔧", "icon-violet", "Technicians", techniciansValue),
                 statCard("⏳", "icon-amber", "Active orders", activeValue),
-                statCard("💰", "icon-green", "Revenue this month", revenueValue));
+                statCard("💰", "icon-green", "Monthly revenue", revenueValue));
 
         Label recentTitle = new Label("Latest orders");
         recentTitle.getStyleClass().add("section-title");
