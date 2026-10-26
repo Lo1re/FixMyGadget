@@ -49,6 +49,41 @@ public class MainApp extends Application {
             Platform.runLater(() -> Ui.showError("Unexpected error", String.valueOf(e.getMessage())));
         });
 
+        SplashScreen splash = new SplashScreen();
+        StartupTask task = new StartupTask();
+        splash.bind(task);
+
+        task.setOnSucceeded(e -> {
+            facade = task.getValue();
+            try {
+                showMainWindow(stage);
+            } catch (RuntimeException ex) {
+                log.error("Cannot open main window", ex);
+                Ui.showError("Cannot start application", String.valueOf(ex.getMessage()));
+                Platform.exit();
+                return;
+            }
+            splash.close();   // closed only after the main window is visible
+        });
+
+        task.setOnFailed(e -> {
+            Throwable error = task.getException();
+            log.error("Cannot start application", error);
+            String text = String.valueOf(error.getMessage());
+            if (error.getCause() != null) {
+                text += "\n" + error.getCause().getMessage();
+            }
+            Ui.showError("Cannot start application", text);
+            Platform.exit();
+        });
+
+        splash.show();
+        Thread thread = new Thread(task, "startup");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void showMainWindow(Stage stage) {
         pages.add(new DashboardPage(facade));
         pages.add(new GadgetsPage(facade));
         pages.add(new CustomersPage(facade));
