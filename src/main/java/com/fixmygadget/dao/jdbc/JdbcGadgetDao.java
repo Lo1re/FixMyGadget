@@ -14,23 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-/**
- * Implements JDBC-based persistence and retrieval for gadget entities.
- *
- * <p>Manages gadget records, their manufacturer associations, and
- * their features stored in the related database tables. Supports
- * filtering by manufacturer, type, name and type, and screen dimensions.</p>
- *
- * <p>Design patterns: Data Access Object (DAO) and Template Method
- * through {@link AbstractJdbcDao}. Overrides selection to load gadget
- * features after mapping the main database records.</p>
- *
- * <p>Uses JDBC transactions to keep gadget and feature changes
- * consistent during save and update operations. Resolves manufacturer
- * identifiers, persists feature associations, maps result rows into
- * {@code Gadget} objects, and wraps SQL failures in
- * {@link com.fixmygadget.exception.DaoException}.</p>
- */
+
 public class JdbcGadgetDao extends AbstractJdbcDao<Gadget> implements GadgetDao {
     private static final Logger log = LoggerFactory.getLogger(JdbcGadgetDao.class);
 
@@ -87,6 +71,9 @@ public class JdbcGadgetDao extends AbstractJdbcDao<Gadget> implements GadgetDao 
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
+            if ("23503".equals(e.getSQLState())) {
+                throw new IllegalStateException("This gadget is used in repair orders. Delete those orders first.");
+            }
             throw new DaoException("Cannot delete gadget", e);
         }
     }

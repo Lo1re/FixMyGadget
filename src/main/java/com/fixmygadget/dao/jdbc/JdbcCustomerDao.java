@@ -12,22 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-/**
- * Implements customer data access using JDBC and a relational database.
- *
- * <p>Provides CRUD operations for customer records and supports
- * retrieving customers by identifier, phone number, or all records.
- * The class uses parameterized SQL statements and obtains database
- * connections through {@link com.fixmygadget.db.ConnectionProvider}.</p>
- *
- * <p>Design patterns: Data Access Object (DAO) and Template Method
- * through {@link AbstractJdbcDao}, which provides shared selection
- * logic and delegates result-set mapping to this class.</p>
- *
- * <p>Converts database rows into {@code Customer} objects, updates
- * generated identifiers after insertion, and wraps SQL errors in
- * {@link com.fixmygadget.exception.DaoException}.</p>
- */
+
 public class JdbcCustomerDao extends AbstractJdbcDao<Customer> implements CustomerDao {
     private static final Logger log = LoggerFactory.getLogger(JdbcCustomerDao.class);
 
@@ -78,6 +63,9 @@ public class JdbcCustomerDao extends AbstractJdbcDao<Customer> implements Custom
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
+            if ("23503".equals(e.getSQLState())) {
+                throw new IllegalStateException("This customer has repair orders. Delete their orders first.");
+            }
             throw new DaoException("Cannot delete customer", e);
         }
     }

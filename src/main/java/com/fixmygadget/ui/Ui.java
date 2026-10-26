@@ -12,15 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -97,11 +89,21 @@ public final class Ui {
         }
     }
 
+
     public static void showError(String header, String text) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("FixMyGadget");
         alert.setHeaderText(header);
-        alert.setContentText(text);
+
+        TextArea textArea = new TextArea(text);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        textArea.setPrefRowCount(8);
+
+        alert.getDialogPane().setContent(textArea);
+
         style(alert);
         alert.showAndWait();
     }
