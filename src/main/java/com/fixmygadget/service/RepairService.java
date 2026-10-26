@@ -21,7 +21,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+/**
+ * Manages repair orders and their business lifecycle.
+ *
+ * <p>Coordinates repair-order operations, handles status transitions,
+ * and applies business rules related to repairs, customers, gadgets,
+ * and technicians.</p>
+ *
+ * <p>Acts as the business logic layer between the application interface
+ * and the data access layer.</p>
+ */
 public class RepairService {
     private static final Logger log = LoggerFactory.getLogger(RepairService.class);
 

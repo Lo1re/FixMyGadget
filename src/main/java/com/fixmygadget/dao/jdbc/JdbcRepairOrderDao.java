@@ -20,7 +20,25 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
-
+/**
+ * Implements JDBC-based persistence and retrieval for repair orders.
+ *
+ * <p>Provides CRUD operations and queries for finding repair orders
+ * by status, technician, customer, gadget, creation period, and
+ * completion period. Maps database records to {@code RepairOrder}
+ * objects and resolves associated gadgets, customers, and technicians
+ * through their respective DAO interfaces.</p>
+ *
+ * <p>Design patterns: Data Access Object (DAO) and Template Method
+ * through {@link AbstractJdbcDao}. Uses constructor injection to
+ * receive the related DAO dependencies.</p>
+ *
+ * <p>Handles nullable technician assignments and completion
+ * timestamps, converts database timestamps to {@code LocalDateTime},
+ * and binds order fields to prepared statements. Keeps persistence
+ * logic separate from repair-order business logic and wraps SQL
+ * failures in {@link com.fixmygadget.exception.DaoException}.</p>
+ */
 public class JdbcRepairOrderDao extends AbstractJdbcDao<RepairOrder> implements RepairOrderDao {
     private static final Logger log = LoggerFactory.getLogger(JdbcRepairOrderDao.class);
 

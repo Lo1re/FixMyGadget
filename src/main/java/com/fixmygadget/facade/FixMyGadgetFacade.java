@@ -22,7 +22,16 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
+/**
+ * Provides a unified entry point to the FixMyGadget application.
+ *
+ * <p>Coordinates interactions between application services and exposes
+ * the main business operations through a single interface, hiding the
+ * internal complexity of the service layer from the UI controllers.</p>
+ *
+ * <p>Implements the Facade design pattern by providing a simplified
+ * interface to the application's subsystem.</p>
+ */
 public class FixMyGadgetFacade {
     private final GadgetService gadgetService;
     private final CustomerService customerService;

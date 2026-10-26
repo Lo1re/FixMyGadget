@@ -3,7 +3,15 @@ package com.fixmygadget.sort;
 import com.fixmygadget.model.Gadget;
 
 import java.util.Comparator;
-
+/**
+ * Defines the supported sorting fields for gadgets.
+ *
+ * <p>Encapsulates the comparison logic for gadget attributes, allowing
+ * gadgets to be sorted according to different criteria.</p>
+ *
+ * <p>Implements the Strategy design pattern by providing interchangeable
+ * sorting strategies for gadget data.</p>
+ */
 public enum GadgetSortField {
     NAME("Name", Comparator.comparing(Gadget::getName, String.CASE_INSENSITIVE_ORDER)),
     MANUFACTURER("Manufacturer", Comparator.comparing(Gadget::getManufacturer, String.CASE_INSENSITIVE_ORDER)),

@@ -3,7 +3,22 @@ package com.fixmygadget.model;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-
+/**
+ * Constructs {@link Gadget} instances through incremental configuration.
+ *
+ * <p>Provides fluent methods for setting the gadget's identifier,
+ * name, manufacturer, price, type, screen dimensions, and features.
+ * The {@code build()} method validates required fields and creates
+ * a configured gadget instance.</p>
+ *
+ * <p>Design pattern: Builder. Method chaining allows object
+ * construction to be expressed step by step without requiring
+ * a constructor with numerous parameters.</p>
+ *
+ * <p>Rejects construction when the name, manufacturer, price,
+ * or type is missing. Copies the configured feature values into
+ * the resulting gadget.</p>
+ */
 public class GadgetBuilder implements Builder<Gadget> {
     private Integer id;
     private String name;

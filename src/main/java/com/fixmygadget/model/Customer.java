@@ -1,5 +1,15 @@
 package com.fixmygadget.model;
-
+/**
+ * Represents a customer registered with the FixMyGadget service center.
+ *
+ * <p>Stores the customer's identifier, first name, last name, and
+ * phone number. Provides constructors and accessor methods for
+ * managing customer data, along with a human-readable string
+ * representation.</p>
+ *
+ * <p>Role: Domain model. The class encapsulates customer information
+ * used by repair orders and customer management operations.</p>
+ */
 public class Customer {
     private Integer id;
     private String lastName;

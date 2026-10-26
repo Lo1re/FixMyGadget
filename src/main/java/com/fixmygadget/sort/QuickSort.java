@@ -2,7 +2,15 @@ package com.fixmygadget.sort;
 
 import java.util.Comparator;
 import java.util.List;
-
+/**
+ * Implements the QuickSort algorithm for sorting application data.
+ *
+ * <p>Uses a comparator to determine the ordering of elements and a
+ * median-of-three pivot selection strategy to improve partitioning.</p>
+ *
+ * <p>Provides reusable sorting functionality without relying on
+ * Java's built-in sorting algorithms.</p>
+ */
 public final class QuickSort {
 
     private QuickSort() {

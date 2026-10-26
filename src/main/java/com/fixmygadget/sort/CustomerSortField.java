@@ -3,7 +3,20 @@ package com.fixmygadget.sort;
 import com.fixmygadget.model.Customer;
 
 import java.util.Comparator;
-
+/**
+ * Defines the available sorting criteria for customers.
+ *
+ * <p>Each enum constant associates a user-friendly label with a comparator
+ * that sorts customers by last name, first name, or phone number.
+ * Name comparisons are case-insensitive.</p>
+ *
+ * <p>Provides ascending and descending comparators with customer ID as
+ * a secondary sorting criterion to ensure deterministic ordering when
+ * the primary field values are equal.</p>
+ *
+ * <p>Implements the Strategy design pattern by encapsulating interchangeable
+ * customer sorting strategies.</p>
+ */
 public enum CustomerSortField {
     LAST_NAME("Last name", Comparator.comparing(Customer::getLastName, String.CASE_INSENSITIVE_ORDER)),
     FIRST_NAME("First name", Comparator.comparing(Customer::getFirstName, String.CASE_INSENSITIVE_ORDER)),

@@ -11,7 +11,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Provides shared JDBC-based data retrieval functionality for DAO
+ * implementations.
+ *
+ * <p>Stores a base SELECT query and implements a reusable selection
+ * mechanism that binds query parameters, executes SQL, iterates over
+ * the result set, and converts rows into domain objects through the
+ * abstract {@code map} method.</p>
+ *
+ * <p>Design patterns: Template Method and Data Access Object (DAO).
+ * The abstract mapping method delegates entity-specific row conversion
+ * to subclasses while the base class handles the common query workflow.</p>
+ *
+ * <p>Promotes code reuse across JDBC DAO implementations, centralizes
+ * resource management through try-with-resources, and wraps SQL
+ * failures in {@link com.fixmygadget.exception.DaoException}.</p>
+ */
 public abstract class AbstractJdbcDao<T> {
     private static final Logger log = LoggerFactory.getLogger(AbstractJdbcDao.class);
 

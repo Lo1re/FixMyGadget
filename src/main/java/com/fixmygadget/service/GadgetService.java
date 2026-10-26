@@ -14,7 +14,15 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
-
+/**
+ * Provides business operations for managing gadgets.
+ *
+ * <p>Coordinates gadget-related operations, validates business requirements,
+ * and delegates data persistence to the appropriate DAO.</p>
+ *
+ * <p>Separates gadget business logic from the user interface and
+ * database access layers.</p>
+ */
 public class GadgetService {
     private static final Logger log = LoggerFactory.getLogger(GadgetService.class);
 

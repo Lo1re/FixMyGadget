@@ -13,7 +13,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
+/**
+ * Provides business operations for managing customers.
+ *
+ * <p>Coordinates customer-related operations, applies business rules,
+ * and delegates data access to the appropriate DAO.</p>
+ *
+ * <p>Separates customer business logic from the user interface and
+ * database access layers.</p>
+ */
 public class CustomerService {
     private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
 

@@ -3,7 +3,20 @@ package com.fixmygadget.sort;
 import com.fixmygadget.model.Technician;
 
 import java.util.Comparator;
-
+/**
+ * Defines the available sorting criteria for technicians.
+ *
+ * <p>Each enum constant associates a user-friendly label with a comparator
+ * that sorts technicians by last name or first name.
+ * Name comparisons are case-insensitive.</p>
+ *
+ * <p>Provides ascending and descending comparators with technician ID as
+ * a secondary sorting criterion to ensure deterministic ordering when
+ * the primary field values are equal.</p>
+ *
+ * <p>Implements the Strategy design pattern by encapsulating interchangeable
+ * technician sorting strategies.</p>
+ */
 public enum TechnicianSortField {
     LAST_NAME("Last name", Comparator.comparing(Technician::getLastName, String.CASE_INSENSITIVE_ORDER)),
     FIRST_NAME("First name", Comparator.comparing(Technician::getFirstName, String.CASE_INSENSITIVE_ORDER));

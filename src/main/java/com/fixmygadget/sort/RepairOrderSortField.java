@@ -3,7 +3,15 @@ package com.fixmygadget.sort;
 import com.fixmygadget.model.RepairOrder;
 
 import java.util.Comparator;
-
+/**
+ * Defines the supported sorting fields for repair orders.
+ *
+ * <p>Encapsulates the comparison logic for repair-order attributes,
+ * allowing repair orders to be sorted according to different criteria.</p>
+ *
+ * <p>Implements the Strategy design pattern by providing interchangeable
+ * sorting strategies for repair-order data.</p>
+ */
 public enum RepairOrderSortField {
     ID("ID", Comparator.comparing(RepairOrder::getId,
             Comparator.nullsFirst(Comparator.naturalOrder()))),

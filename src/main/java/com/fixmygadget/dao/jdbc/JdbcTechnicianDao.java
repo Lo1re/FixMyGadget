@@ -12,7 +12,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+/**
+ * Implements technician data access using JDBC.
+ *
+ * <p>Provides CRUD operations for technician records, including
+ * insertion, updating, deletion, retrieval by identifier, and
+ * retrieval of all technicians.</p>
+ *
+ * <p>Design patterns: Data Access Object (DAO) and Template Method
+ * through {@link AbstractJdbcDao}, which supplies reusable query
+ * execution while this class implements technician-specific
+ * result-set mapping.</p>
+ *
+ * <p>Uses {@link com.fixmygadget.db.ConnectionProvider} to obtain
+ * database connections, retrieves generated identifiers after
+ * insertion, and translates SQL failures into
+ * {@link com.fixmygadget.exception.DaoException}.</p>
+ */
 public class JdbcTechnicianDao extends AbstractJdbcDao<Technician> implements TechnicianDao {
     private static final Logger log = LoggerFactory.getLogger(JdbcTechnicianDao.class);
 

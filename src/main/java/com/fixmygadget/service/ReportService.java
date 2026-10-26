@@ -8,7 +8,14 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
+/**
+ * Generates reports based on application data.
+ *
+ * <p>Collects and processes relevant information from the application's
+ * data access or service layers to produce reports for users.</p>
+ *
+ * <p>Centralizes reporting logic outside the user interface layer.</p>
+ */
 public class ReportService {
     private static final Logger log = LoggerFactory.getLogger(ReportService.class);
 

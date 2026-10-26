@@ -7,8 +7,26 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-//class designed for a tesk
 
+/**
+ * Represents a gadget managed by the FixMyGadget service center.
+ *
+ * <p>Stores the gadget's identifier, name, manufacturer, price, type,
+ * screen dimensions, and a set of additional features. Provides
+ * constructors, accessors, feature management operations, and
+ * text-based serialization and deserialization through {@code Writer}
+ * and {@code Reader}.</p>
+ *
+ * <p>Design patterns: Builder is supported by the separate
+ * {@link GadgetBuilder} class. The copy constructor provides a way
+ * to create a separate gadget instance with copied field values
+ * and a separately allocated feature set.</p>
+ *
+ * <p>The {@code writeTo()} and {@code readFrom()} methods use a
+ * semicolon-separated record format, with comma-separated feature
+ * names. These operations support transferring gadget data through
+ * character streams independently of database persistence.</p>
+ */
 public class Gadget {
     private Integer id;
     private String name;
