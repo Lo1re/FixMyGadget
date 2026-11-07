@@ -125,14 +125,15 @@ public class GadgetService {
         return count;
     }
     private void validate(Gadget gadget) throws IllegalArgumentException {
+        if (gadget.getName() == null || gadget.getName().isBlank()) {
+            throw new IllegalArgumentException("Gadget name is required");
+        }
         if (gadget.getName().contains(";")
                 || gadget.getManufacturer().contains(";")) {
             throw new IllegalArgumentException(
                     "Name and manufacturer must not contain ';'");
         }
-        if (gadget.getName() == null || gadget.getName().isBlank()) {
-            throw new IllegalArgumentException("Gadget name is required");
-        }
+
         if (gadget.getManufacturer() == null || gadget.getManufacturer().isBlank()) {
             throw new IllegalArgumentException("Manufacturer is required");
         }

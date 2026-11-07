@@ -96,13 +96,31 @@ class JdbcTechnicianDaoTest {
         assertThrows(DaoException.class, () -> dao.update(t));
     }
 
+
     @Test
     void deleteBindsId() throws SQLException {
+        PreparedStatement detachPs = mock(PreparedStatement.class);
+        PreparedStatement deletePs = mock(PreparedStatement.class);
+
+        when(connection.prepareStatement(
+                "UPDATE repair_order SET technician_id = NULL WHERE technician_id = ?"
+        )).thenReturn(detachPs);
+
+        when(connection.prepareStatement(
+                "DELETE FROM technician WHERE id = ?"
+        )).thenReturn(deletePs);
+
         dao.delete(6);
 
-        verify(ps).setInt(1, 6);
-        verify(ps).executeUpdate();
+        verify(detachPs).setInt(1, 6);
+        verify(detachPs).executeUpdate();
+
+        verify(deletePs).setInt(1, 6);
+        verify(deletePs).executeUpdate();
+
+        verify(connection).commit();
     }
+
 
     @Test
     void deleteWrapsSqlException() throws SQLException {
