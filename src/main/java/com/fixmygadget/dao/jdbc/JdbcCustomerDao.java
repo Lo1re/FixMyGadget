@@ -37,7 +37,7 @@ public class JdbcCustomerDao extends AbstractJdbcDao<Customer> implements Custom
             throw new DaoException("Cannot save customer", e);
         }
     }
-
+//transaction isnt needed bcs autocommit=true for single operations
     @Override
     public void update(Customer customer) {
         String sql = "UPDATE customer SET last_name = ?, first_name = ?, phone = ? WHERE id = ?";

@@ -48,6 +48,7 @@ public abstract class AbstractJdbcDao<T> {
              PreparedStatement ps = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
                 ps.setObject(i + 1, params[i]);
+                //i+1 bcs in sql index starting from 1
             }
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

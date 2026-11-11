@@ -122,7 +122,7 @@ public class CustomersPage extends Page {
             }
         }
         if (sortField != null) {
-            facade.sortCustomers(shown, sortField, ascending);   // Quick sort в Java
+            facade.sortCustomers(shown, sortField, ascending);   // Quick sort
         }
         table.getItems().setAll(shown);
         countLabel.setText(shown.size() + " customers");
